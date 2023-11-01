@@ -22,9 +22,28 @@ const registerUser = async (req, res) => {
 }
 
 /**
+ *  @desc   Login user and generate new auth token
+ *  @route  POST  api/users/login
+ *  @public
+*/ 
+const loginUser = async (req, res) => {
+  const { email, password } = req.body
+
+  try {
+    const user = await User.findByCredentials(email, password)
+    user.generateAuthToken()
+
+    res.status(201).send(user)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+}
+
+/**
  *  @desc   Update users data (email and password are eligible to change)
  *  @route  POST  api/users/update-account
  *  @public
+ *  @protected
 */ 
 const updateUsersData = asyncHandler (async (req, res) => {
   const { email, password, newEmail, newPassword } = req.body
@@ -55,4 +74,20 @@ const updateUsersData = asyncHandler (async (req, res) => {
   }
 })
 
-module.exports = { registerUser, updateUsersData }
+/**
+ *  @desc   Delete users account from db
+ *  @route  DELETE  api/users/delete-account
+ *  @public
+ *  @protected
+*/ 
+const deleteUserAccount = asyncHandler(async (req, res) => {
+  try {
+    await req.user.deleteOne()
+    res.status(201).send(req.user)
+  } catch (error) {
+    res.status(400)
+    throw new Error(error)
+  }
+})
+
+module.exports = { registerUser, loginUser, updateUsersData, deleteUserAccount }
