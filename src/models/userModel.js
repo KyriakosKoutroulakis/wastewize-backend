@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const emailValidator = require("email-validator")
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const { generateAccessToken, generateRefreshToken } = require('../helpers/generateAuthTokens')
 
 const userSchema = new mongoose.Schema(
   {
@@ -36,37 +36,19 @@ const userSchema = new mongoose.Schema(
         }
       }
     },
-    token: {
-      type: String
+    tokens: {
+      accessToken: {
+        type: String
+      },
+      refreshToken: {
+        type: String
+      }
     }
   },
   {
     timestamps: true,
   }
 )
-
-/**
- *  @desc   Remove confidential info before returning the user object
- *  @private  
- */
-userSchema.methods.toJSON = function () {
-  const user = this
-  const userObj = user.toObject()
-
-  delete userObj.password
-
-  return userObj
-}
-
-userSchema.methods.generateAuthToken = async function () {
-  const user = this
-  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: 60 }) // '10m'
-
-  user.token = token
-  await user.save()
-
-  return token
-}
 
 /**
  *  @desc   Hash users password before storing it to database
@@ -83,12 +65,35 @@ userSchema.pre('save', async function (next) {
 })
 
 /**
+ *  @desc   Remove confidential info before returning the user object
+ *  @private  
+ */
+userSchema.methods.toJSON = function () {
+  const user = this
+  const userObj = user.toObject()
+
+  delete userObj.password
+
+  return userObj
+}
+
+userSchema.methods.generateAccessToken = async function () {
+  const user = this
+
+  user.tokens.accessToken = generateAccessToken(user._id.toString())
+
+  return user
+}
+
+// TODO Create method to generate Refresh token
+
+/**
  *  @desc   Method to check users credentials for authentication
  *  @param  {string} email      - the email address that is being used
  *  @param  {string} password   - users password
  *  @public
  */
-userSchema.statics.findByCredentials = async (email, password) => {
+userSchema.statics.findUserByCredentials = async (email, password) => {
   const user = await User.findOne({ email })
 
   if (!user) {
@@ -97,6 +102,21 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
   if (!await bcrypt.compare(password, user.password)) {
     throw new Error('Wrong password provided.')
+  }
+
+  return user
+}
+
+/**
+ *  @desc   Method to find user based on the id
+ *  @param  {string} id   - the email address that is being used
+ *  @public
+ */
+userSchema.statics.findUserById = async (id) => {
+  // todo Implement find user by id
+
+  if (!user) {
+    throw new Error('User does not exist.')
   }
 
   return user

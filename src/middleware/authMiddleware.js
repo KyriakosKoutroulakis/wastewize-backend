@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
 
 const User = require('../models/userModel')
-
+// TODO only token check for authentication
 const authenticateUser = asyncHandler (async (req, res, next) => {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
@@ -12,7 +12,6 @@ const authenticateUser = asyncHandler (async (req, res, next) => {
       // todo Code clean
       const decoded = jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
         console.log("🚀 ~ file: authMiddleware.js:14 ~ decoded ~ err:", err)
-        
       })
 
       if (!decoded) {
@@ -20,6 +19,7 @@ const authenticateUser = asyncHandler (async (req, res, next) => {
         throw new Error('You\'re not authorized.')
       }
 
+      // todo Move to userModel as statics
       const user = await User.findById(decoded._id)
 
       if (Date.now() >= decoded.iat * 1000) {

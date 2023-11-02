@@ -12,9 +12,9 @@ const registerUser = async (req, res) => {
   const user = new User(req.body) 
 
   try {
+    await user.generateAccessToken()
     await user.save()
-    await user.generateAuthToken()
-
+  
     res.status(201).send(user)
   } catch (error) {
     res.status(400).send(error)
@@ -30,10 +30,11 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body
 
   try {
-    const user = await User.findByCredentials(email, password)
-    user.generateAuthToken()
+    const user = await User.findUserByCredentials(email, password)
+    await user.generateAccessToken()
+    await user.save()
 
-    res.status(201).send(user)
+    res.status(200).send(user)
   } catch (error) {
     res.status(400).send(error)
   }
@@ -49,7 +50,7 @@ const updateUsersData = asyncHandler (async (req, res) => {
   const { email, password, newEmail, newPassword } = req.body
 
   try {
-    const user = await User.findByCredentials(email, password)
+    const user = await User.findUserByCredentials(email, password)
 
     if (newEmail) {
       if (user.email === newEmail) {
