@@ -68,12 +68,17 @@ const updateUsersData = asyncHandler (async (req, res) => {
     
     await user.save()
     
-    res.status(200).send(user)
+    res.status(200).send({
+      message: 'You have successfully updated your personal info!' ,
+      user
+    })
   } catch (error) {
     res.status(400)
     throw new Error(error)
   }
 })
+
+// todo implement logout
 
 /**
  *  @desc   Delete users account from db

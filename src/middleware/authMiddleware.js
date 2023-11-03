@@ -2,39 +2,34 @@ const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
 
 const User = require('../models/userModel')
-// TODO only token check for authentication
+ 
 const authenticateUser = asyncHandler (async (req, res, next) => {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       let token = req.headers.authorization.split(' ')[1]
 
-      // todo Implementation of access & refresh tokens for user exp and optimal security
-      // todo Code clean
-      const decoded = jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
-        console.log("🚀 ~ file: authMiddleware.js:14 ~ decoded ~ err:", err)
+      const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, function (err, decoded) {
+        if (err && err.name === 'TokenExpiredError') {
+          // todo check the refresh token and generate a new access token
+        } else if (err) {
+          res.status(401)
+          throw new Error('Please login first!')
+        }
+        return decoded
       })
 
-      if (!decoded) {
-        res.status(401)
-        throw new Error('You\'re not authorized.')
-      }
-
-      // todo Move to userModel as statics
       const user = await User.findById(decoded._id)
-
-      if (Date.now() >= decoded.iat * 1000) {
-        const newToken = user.generateAuthToken()
-        console.log("🚀 ~ file: authMiddleware.js:19 ~ authenticateUser ~ newToken:", newToken)
-      }
 
       req.user = user
 
       next()
     } catch (error) {
       res.status(401)
-      throw new Error('Please authenticate first.')
+      throw new Error('Please login first.')
     }
   }
 })
+
+// todo Create private func to check the refresh token
 
 module.exports = authenticateUser

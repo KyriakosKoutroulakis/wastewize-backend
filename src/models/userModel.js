@@ -109,11 +109,11 @@ userSchema.statics.findUserByCredentials = async (email, password) => {
 
 /**
  *  @desc   Method to find user based on the id
- *  @param  {string} id   - the email address that is being used
+ *  @param  {string} id   - users id from the db
  *  @public
  */
 userSchema.statics.findUserById = async (id) => {
-  // todo Implement find user by id
+  const user = await User.findById(id)
 
   if (!user) {
     throw new Error('User does not exist.')
