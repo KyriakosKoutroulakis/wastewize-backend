@@ -15,7 +15,10 @@ const registerUser = async (req, res) => {
     await user.generateAccessToken()
     await user.save()
   
-    res.status(201).send(user)
+    res.status(201).send({
+      successMessage: 'Account created successfully!',
+      user
+    })
   } catch (error) {
     res.status(400).send(error)
   }
@@ -34,7 +37,10 @@ const loginUser = async (req, res) => {
     await user.generateAccessToken()
     await user.save()
 
-    res.status(200).send(user)
+    res.status(200).send({
+      successMessage: 'Login successfull!',
+      user
+    })
   } catch (error) {
     res.status(400).send(error)
   }
@@ -69,7 +75,7 @@ const updateUsersData = asyncHandler (async (req, res) => {
     await user.save()
     
     res.status(200).send({
-      message: 'You have successfully updated your personal info!' ,
+      successMessage: 'You have successfully updated your personal info!',
       user
     })
   } catch (error) {
@@ -89,7 +95,10 @@ const updateUsersData = asyncHandler (async (req, res) => {
 const deleteUserAccount = asyncHandler(async (req, res) => {
   try {
     await req.user.deleteOne()
-    res.status(201).send(req.user)
+    res.status(201).send({
+      successMessage: 'Account deleted!',
+      user: req.user
+    })
   } catch (error) {
     res.status(400)
     throw new Error(error)

@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       validate (password) {
         if (password.length < 7) {
-          throw new Error('Password must contain at leasr 6 alphanumeric values!')
+          throw new Error('Password must contain at least 6 alphanumeric values!')
         }
       }
     },
