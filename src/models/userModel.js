@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema(
 /**
  *  @desc   Hash users password before storing it to database
  *  @private  
- */
+*/
 userSchema.pre('save', async function (next) {
   const user = this
 
@@ -67,7 +67,7 @@ userSchema.pre('save', async function (next) {
 /**
  *  @desc   Remove confidential info before returning the user object
  *  @private  
- */
+*/
 userSchema.methods.toJSON = function () {
   const user = this
   const userObj = user.toObject()
@@ -77,6 +77,10 @@ userSchema.methods.toJSON = function () {
   return userObj
 }
 
+/**
+ *  @desc   Generate users access key for authentication
+ *  @public 
+*/
 userSchema.methods.generateAccessToken = async function () {
   const user = this
 
@@ -88,11 +92,11 @@ userSchema.methods.generateAccessToken = async function () {
 // TODO Create method to generate Refresh token
 
 /**
- *  @desc   Method to check users credentials for authentication
+ *  @desc   Retrieve user based on the credentials provided
  *  @param  {string} email      - the email address that is being used
  *  @param  {string} password   - users password
  *  @public
- */
+*/
 userSchema.statics.findUserByCredentials = async (email, password) => {
   const user = await User.findOne({ email })
 
@@ -108,10 +112,10 @@ userSchema.statics.findUserByCredentials = async (email, password) => {
 }
 
 /**
- *  @desc   Method to find user based on the id
+ *  @desc   Retrieve user based on the unique _id
  *  @param  {string} id   - users id from the db
  *  @public
- */
+*/
 userSchema.statics.findUserById = async (id) => {
   const user = await User.findById(id)
 
