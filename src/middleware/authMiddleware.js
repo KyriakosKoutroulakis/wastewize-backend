@@ -14,10 +14,10 @@ const authenticateUser = asyncHandler (async (req, res, next) => {
 
       const { _id } = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET, function (err, decoded) {
         if (err && err.name === 'TokenExpiredError') {
-          // todo check the refresh token and generate a new access token
+          // todo logic for expired token
         } else if (err) {
           res.status(401)
-          throw new Error('Please login first!')
+          throw new Error(err.message)
         }
         return decoded
       })
@@ -34,6 +34,6 @@ const authenticateUser = asyncHandler (async (req, res, next) => {
   }
 })
 
-// todo Create private func to check the refresh token
+const refreshAccessToken = () => {}
 
 module.exports = { authenticateUser }

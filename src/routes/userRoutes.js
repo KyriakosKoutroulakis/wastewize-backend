@@ -3,7 +3,7 @@ const router = express.Router()
 
 const { authenticateUser } = require('../middleware/authMiddleware')
 
-const { registerUser, loginUser, updateUsersData, deleteUserAccount } = require('../controllers/userController')
+const { registerUser, loginUser, updateUsersData, deleteUserAccount } = require('../controllers/routersControllers/userController')
 
 /** 
  *  @route  /api/users

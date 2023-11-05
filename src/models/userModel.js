@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 const emailValidator = require("email-validator")
 const bcrypt = require('bcrypt')
-const { generateAccessToken, generateRefreshToken } = require('../helpers/generateAuthTokens')
+
+const { generateAccessToken } = require('../helpers/generateAuthTokens')
 
 const userSchema = new mongoose.Schema(
   {
@@ -36,19 +37,21 @@ const userSchema = new mongoose.Schema(
         }
       }
     },
-    tokens: {
-      accessToken: {
-        type: String
-      },
-      refreshToken: {
-        type: String
-      }
+    accessToken: {
+      type: String
     }
   },
   {
     timestamps: true,
   }
 )
+
+// Relationship between User - RefreshToken
+userSchema.virtual('refreshToken', {
+  ref: 'RefreshToken',
+  localField: '_id',
+  foreignField: 'owner'
+})
 
 /**
  *  @desc   Hash users password before storing it to database
@@ -78,18 +81,16 @@ userSchema.methods.toJSON = function () {
 }
 
 /**
- *  @desc   Generate users access key for authentication
+ *  @desc   Generate users access token for authentication
  *  @public 
 */
-userSchema.methods.generateAccessToken = async function () {
+userSchema.methods.createAccessToken = async function () {
   const user = this
 
-  user.tokens.accessToken = generateAccessToken(user._id.toString())
+  user.accessToken = generateAccessToken(user._id.toString())
 
   return user
 }
-
-// TODO Create method to generate Refresh token
 
 /**
  *  @desc   Retrieve user based on the credentials provided
@@ -127,5 +128,4 @@ userSchema.statics.findUserById = async (id) => {
 }
 
 const User = mongoose.model('User', userSchema)
-
 module.exports = User

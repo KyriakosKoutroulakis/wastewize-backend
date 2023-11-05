@@ -1,7 +1,9 @@
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 
-const User = require('../models/userModel')
+const { createRefreshToken, removeRefreshTokenOnUserDelete } = require('../generalControllers/refreshTokenController')
+
+const User = require('../../models/userModel')
 
 /**
  *  @desc   Register a new user in database
@@ -9,11 +11,13 @@ const User = require('../models/userModel')
  *  @public
 */ 
 const registerUser = async (req, res) => {
-  const user = new User(req.body) 
+  const user = new User(req.body)
 
   try {
-    await user.generateAccessToken()
+    await user.createAccessToken()
     await user.save()
+
+    createRefreshToken(user._id)
   
     res.status(201).send({
       successMessage: 'Account created successfully!',
@@ -36,6 +40,9 @@ const loginUser = async (req, res) => {
     const user = await User.findUserByCredentials(email, password)
     await user.generateAccessToken()
     await user.save()
+    
+    // todo create new rToken when the user logs ins
+    // createRefreshToken(user._id)
 
     res.status(200).send({
       successMessage: 'Login successfull!',
@@ -95,9 +102,11 @@ const updateUsersData = asyncHandler (async (req, res) => {
 const deleteUserAccount = asyncHandler(async (req, res) => {
   try {
     await req.user.deleteOne()
+
+    removeRefreshTokenOnUserDelete(req.user._id)
+
     res.status(201).send({
-      successMessage: 'Account deleted!',
-      user: req.user
+      successMessage: 'Account deleted!'
     })
   } catch (error) {
     res.status(400)
