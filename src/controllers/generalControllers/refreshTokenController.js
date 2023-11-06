@@ -13,7 +13,7 @@ const createRefreshToken = asyncHandler (async (owner) => {
   }
 })
 
-const removeRefreshTokenOnUserDelete = asyncHandler (async (owner) => {
+const removeRefreshToken = asyncHandler (async (owner) => {
   const refreshToken = new RefreshToken()
 
   try {
@@ -23,4 +23,4 @@ const removeRefreshTokenOnUserDelete = asyncHandler (async (owner) => {
   }
 })
 
-module.exports = { createRefreshToken, removeRefreshTokenOnUserDelete }
+module.exports = { createRefreshToken, removeRefreshToken }

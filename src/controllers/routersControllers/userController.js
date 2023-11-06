@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 
-const { createRefreshToken, removeRefreshTokenOnUserDelete } = require('../generalControllers/refreshTokenController')
+const { createRefreshToken, removeRefreshToken } = require('../generalControllers/refreshTokenController')
 
 const User = require('../../models/userModel')
 
@@ -38,11 +38,10 @@ const loginUser = async (req, res) => {
 
   try {
     const user = await User.findUserByCredentials(email, password)
-    await user.generateAccessToken()
+    await user.createAccessToken()
     await user.save()
     
-    // todo create new rToken when the user logs ins
-    // createRefreshToken(user._id)
+    createRefreshToken(user._id)
 
     res.status(200).send({
       successMessage: 'Login successfull!',
@@ -91,7 +90,28 @@ const updateUsersData = asyncHandler (async (req, res) => {
   }
 })
 
-// todo implement logout
+/**
+ *  @desc   Logout user
+ *  @route  POST  api/users/delete-account
+ *  @public
+ *  @protected
+*/ 
+const logoutUser = asyncHandler(async (req, res) => {
+  try {
+    req.user.accessToken = ''
+
+    await req.user.save()
+
+    removeRefreshToken(req.user._id)
+
+    res.status(201).send({
+      successMessage: 'User logged out!'
+    })
+  } catch (error) {
+    res.status(400)
+    throw new Error(error)
+  }
+})
 
 /**
  *  @desc   Delete users account from db
@@ -103,7 +123,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
   try {
     await req.user.deleteOne()
 
-    removeRefreshTokenOnUserDelete(req.user._id)
+    removeRefreshToken(req.user._id)
 
     res.status(201).send({
       successMessage: 'Account deleted!'
@@ -114,4 +134,4 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
   }
 })
 
-module.exports = { registerUser, loginUser, updateUsersData, deleteUserAccount }
+module.exports = { registerUser, loginUser, updateUsersData, deleteUserAccount, logoutUser }
