@@ -1,9 +1,9 @@
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 
-const { createRefreshToken, removeRefreshToken } = require('../generalControllers/refreshTokenController')
+const { createRefreshToken, removeRefreshToken } = require('../controllers/refreshTokenController')
 
-const User = require('../../models/userModel')
+const User = require('../models/userModel')
 
 /**
  *  @desc   Register a new user in database
@@ -17,11 +17,12 @@ const registerUser = async (req, res) => {
     await user.createAccessToken()
     await user.save()
 
-    createRefreshToken(user._id)
+    const refreshToken = await createRefreshToken(user._id)
   
     res.status(201).send({
       successMessage: 'Account created successfully!',
-      user
+      user,
+      refreshToken
     })
   } catch (error) {
     res.status(400).send(error)
@@ -92,7 +93,7 @@ const updateUsersData = asyncHandler (async (req, res) => {
 
 /**
  *  @desc   Logout user
- *  @route  POST  api/users/delete-account
+ *  @route  POST  api/users/logout
  *  @public
  *  @protected
 */ 

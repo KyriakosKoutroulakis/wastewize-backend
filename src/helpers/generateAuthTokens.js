@@ -7,7 +7,8 @@ module.exports = {
    *  @public
   */
   generateAccessToken (userId) {
-    return jwt.sign({ _id: userId }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: "10m" })
+    // return jwt.sign({ _id: userId }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: "10m" })
+    return jwt.sign({ _id: userId }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: 60 })
   },
 
   /**
@@ -16,6 +17,7 @@ module.exports = {
    *  @public
   */
   generateRefreshToken (userId) {
-    return jwt.sign({ _id: userId }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: "1y" })
+    // return jwt.sign({ _id: userId }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: "1y" })
+    return jwt.sign({ _id: userId }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: "24h" })
   }
 }

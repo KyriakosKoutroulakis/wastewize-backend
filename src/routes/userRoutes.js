@@ -6,9 +6,9 @@ const { authenticateUser } = require('../middleware/authMiddleware')
 const { 
   registerUser, 
   loginUser, 
+  logoutUser,
   updateUsersData, 
-  deleteUserAccount, 
-  logoutUser 
+  deleteUserAccount 
 } = require('../controllers/routersControllers/userController')
 
 /** 

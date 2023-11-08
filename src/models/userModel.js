@@ -46,13 +46,6 @@ const userSchema = new mongoose.Schema(
   }
 )
 
-// Relationship between User - RefreshToken
-userSchema.virtual('refreshToken', {
-  ref: 'RefreshToken',
-  localField: '_id',
-  foreignField: 'owner'
-})
-
 /**
  *  @desc   Hash users password before storing it to database
  *  @private  
@@ -76,6 +69,9 @@ userSchema.methods.toJSON = function () {
   const userObj = user.toObject()
 
   delete userObj.password
+  delete userObj.createdAt
+  delete userObj.updatedAt
+  delete userObj.__v
 
   return userObj
 }

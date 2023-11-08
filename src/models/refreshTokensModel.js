@@ -18,6 +18,13 @@ const refreshTokenSchema = new mongoose.Schema(
   }
 )
 
+// Relationship between User - RefreshToken
+refreshTokenSchema.virtual('user', {
+  ref: 'User',
+  localField: '_id',
+  foreignField: 'owner'
+})
+
 /**
  *  @desc   Generate users refresh token for authentication
  *  @param  {string} owner - The unique id of the user that creates the rToken
@@ -28,6 +35,22 @@ refreshTokenSchema.methods.createRefreshToken = async function (owner) {
 
   refreshToken.rToken = generateRefreshToken(owner.toString())
   refreshToken.owner = owner
+
+  return refreshToken 
+}
+
+/**
+ *  @desc   Retrieve users refresh token from the database
+ *  @param  {string} token - The refresh token from the request
+ *  @public 
+*/
+refreshTokenSchema.methods.retrieveRefreshToken = async function (token) {
+  const refreshToken = await RefreshToken.findOne({ rToken: token })
+
+  if (!refreshToken) {
+    res.status(403)
+    throw new Error('Refresh token is not in database!')
+  }
 
   return refreshToken 
 }
