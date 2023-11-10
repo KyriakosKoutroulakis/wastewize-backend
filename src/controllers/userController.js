@@ -42,11 +42,12 @@ const loginUser = async (req, res) => {
     await user.createAccessToken()
     await user.save()
     
-    createRefreshToken(user._id)
+    const refreshToken = await createRefreshToken(user._id)
 
     res.status(200).send({
       successMessage: 'Login successfull!',
-      user
+      user,
+      refreshToken
     })
   } catch (error) {
     res.status(400).send(error)

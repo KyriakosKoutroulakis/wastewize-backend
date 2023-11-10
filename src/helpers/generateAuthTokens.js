@@ -18,6 +18,6 @@ module.exports = {
   */
   generateRefreshToken (userId) {
     // return jwt.sign({ _id: userId }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: "1y" })
-    return jwt.sign({ _id: userId }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: "24h" })
+    return jwt.sign({ _id: userId }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: 60 })
   }
 }

@@ -18,26 +18,28 @@ const verifyRefreshToken = asyncHandler (async (req, res) => {
   }
 
   try {
-    const { _id, rToken, owner } = await RefreshToken.retrieveRefreshToken(requestToken)
-
-    jwt.verify(rToken, process.env.JWT_REFRESH_TOKEN_SECRET, function (err, decoded) {
+    jwt.verify(requestToken, process.env.JWT_REFRESH_TOKEN_SECRET, function (err, decoded) {
       if (err) {
-        RefreshToken.destroyRefreshToken(decoded._id)
-
+        if (!(err.message === 'invalid signature')) {
+          const r = jwt.decode(requestToken, process.env.JWT_REFRESH_TOKEN_SECRET)
+          RefreshToken.destroyRefreshToken(r._id)
+        }
         res.status(403)
-        throw new Error(err.name)
+        throw new Error('NoValidRefreshToken')
       }
     })
 
+    const token = await RefreshToken.retrieveRefreshToken(requestToken)
+    await token.createRefreshToken(token.owner)
+    await token.save()
+
     // Find user and update the expired access token
-    const user = await User.findUserById(owner)
+    const user = await User.findUserById(token.owner)
     await user.createAccessToken()
     await user.save()
 
-    const newRefreshToken = await createRefreshToken(_id)
-
     res.status(201).send({
-      refreshToken: newRefreshToken,
+      refreshToken: token.rToken,
       accessToken: user.accessToken
     })
   } catch (error) {
@@ -46,6 +48,11 @@ const verifyRefreshToken = asyncHandler (async (req, res) => {
   }
 })
 
+/**
+ *  @desc   Create a new refresh token after user's actions - register, login, refresh accessToken
+ *  @param  {owner} - The users unique id
+ *  @public
+*/ 
 const createRefreshToken = asyncHandler (async (owner) => {
   const refreshToken = new RefreshToken()
 
@@ -59,11 +66,14 @@ const createRefreshToken = asyncHandler (async (owner) => {
   }
 })
 
+/**
+ *  @desc   Delete user's refresh token in db after actions - logout, invalid refreshToken check
+ *  @param  {owner} - The users unique id
+ *  @public
+*/ 
 const removeRefreshToken = asyncHandler (async (owner) => {
-  const refreshToken = new RefreshToken()
-
   try {
-    refreshToken.destroyRefreshToken(owner)
+    RefreshToken.destroyRefreshToken(owner)
   } catch (error) {
     throw new Error(error)
   }

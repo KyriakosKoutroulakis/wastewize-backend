@@ -55,15 +55,12 @@ refreshTokenSchema.statics.retrieveRefreshToken = async function (token) {
   return refreshToken 
 }
 
-// todo Create a function to update users refersh token
-// !BUG creates a new instanc of the users refresh token with different _id
-
 /**
  *  @desc   Destroy refreshToken from db on user delete
  *  @param  {string} owner - The unique id of the user that creates the rToken
  *  @public 
 */
-refreshTokenSchema.methods.destroyRefreshToken = async function (owner) {
+refreshTokenSchema.statics.destroyRefreshToken = async function (owner) {
   const removal = await RefreshToken.findOneAndDelete({ owner })
  
   return removal
