@@ -9,7 +9,7 @@ const {
   logoutUser,
   updateUsersData, 
   deleteUserAccount 
-} = require('../controllers/routersControllers/userController')
+} = require('../controllers/userController')
 
 /** 
  *  @route  /api/users

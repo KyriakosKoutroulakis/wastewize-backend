@@ -44,7 +44,7 @@ refreshTokenSchema.methods.createRefreshToken = async function (owner) {
  *  @param  {string} token - The refresh token from the request
  *  @public 
 */
-refreshTokenSchema.methods.retrieveRefreshToken = async function (token) {
+refreshTokenSchema.statics.retrieveRefreshToken = async function (token) {
   const refreshToken = await RefreshToken.findOne({ rToken: token })
 
   if (!refreshToken) {
@@ -54,6 +54,9 @@ refreshTokenSchema.methods.retrieveRefreshToken = async function (token) {
 
   return refreshToken 
 }
+
+// todo Create a function to update users refersh token
+// !BUG creates a new instanc of the users refresh token with different _id
 
 /**
  *  @desc   Destroy refreshToken from db on user delete

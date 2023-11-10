@@ -2,9 +2,10 @@ const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
 
 const RefreshToken = require('../models/refreshTokensModel')
+const User = require('../models/userModel')
 
 /**
- *  @desc   Check the refresh tolen from the body and create a new access token
+ *  @desc   Check the refresh token from the body and create a new access token
  *  @route  POST  /api/auth/verify-token
  *  @public
 */ 
@@ -17,21 +18,31 @@ const verifyRefreshToken = asyncHandler (async (req, res) => {
   }
 
   try {
-    const rToken = await RefreshToken.retrieveRefreshToken(requestToken)
+    const { _id, rToken, owner } = await RefreshToken.retrieveRefreshToken(requestToken)
 
-    if (verifyExpiration(rToken)) {
-      const { _id } = jwt.decode(rToken, process.env.JWT_REFRESH_TOKEN_SECRET)
+    jwt.verify(rToken, process.env.JWT_REFRESH_TOKEN_SECRET, function (err, decoded) {
+      if (err) {
+        RefreshToken.destroyRefreshToken(decoded._id)
 
-      RefreshToken.destroyRefreshToken(_id)
+        res.status(403)
+        throw new Error(err.name)
+      }
+    })
 
-      res.status(403)
-      throw new Error('Refresh token is expired!')
-    }
-    
-    // todo Create another access token and return them both
+    // Find user and update the expired access token
+    const user = await User.findUserById(owner)
+    await user.createAccessToken()
+    await user.save()
 
+    const newRefreshToken = await createRefreshToken(_id)
+
+    res.status(201).send({
+      refreshToken: newRefreshToken,
+      accessToken: user.accessToken
+    })
   } catch (error) {
-    res.status(500).send(error)
+    res.status(403)
+    throw new Error(error)
   }
 })
 
@@ -57,16 +68,5 @@ const removeRefreshToken = asyncHandler (async (owner) => {
     throw new Error(error)
   }
 })
-
-/**
- * @param   {string} token - The refresh token from the request
- * @returns {boolean}      - True or False depending if the token has expired
- * @private
-*/
-const verifyExpiration = (token) => {
-  const { exp } = jwt.decode(token, process.env.JWT_REFRESH_TOKEN_SECRET)
-
-  return Date.now() >= exp * 1000
-}
 
 module.exports = { verifyRefreshToken, createRefreshToken, removeRefreshToken }
