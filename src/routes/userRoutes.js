@@ -1,5 +1,5 @@
 const express = require('express')
-const router = express.Router()
+const userRoutes = express.Router()
 
 const { authenticateUser } = require('../middleware/authMiddleware')
 
@@ -14,10 +14,10 @@ const {
 /** 
  *  @route  /api/users
 */ 
-router.post('/create-account', registerUser)
-router.post('/login', loginUser)
-router.post('/logout', authenticateUser, logoutUser)
-router.put('/update-account', authenticateUser, updateUsersData)
-router.delete('/delete-account', authenticateUser, deleteUserAccount)
+userRoutes.post('/create-account', registerUser)
+userRoutes.post('/login', loginUser)
+userRoutes.post('/logout', authenticateUser, logoutUser)
+userRoutes.put('/update-account', authenticateUser, updateUsersData)
+userRoutes.delete('/delete-account', authenticateUser, deleteUserAccount)
 
-module.exports = router
+module.exports = userRoutes
