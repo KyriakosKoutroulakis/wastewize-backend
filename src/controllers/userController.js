@@ -10,7 +10,7 @@ const User = require('../models/userModel')
  *  @route  POST  api/users/create-account
  *  @public
 */ 
-const registerUser = async (req, res) => {
+const registerUser = asyncHandler (async (req, res) => {
   const user = new User(req.body)
 
   try {
@@ -25,16 +25,17 @@ const registerUser = async (req, res) => {
       refreshToken
     })
   } catch (error) {
-    res.status(400).send(error)
+    res.status(400)
+    throw new Error(error)
   }
-}
+})
 
 /**
  *  @desc   Login user and generate new auth token
  *  @route  POST  api/users/login
  *  @public
 */ 
-const loginUser = async (req, res) => {
+const loginUser = asyncHandler (async (req, res) => {
   const { email, password } = req.body
 
   try {
@@ -50,9 +51,10 @@ const loginUser = async (req, res) => {
       refreshToken
     })
   } catch (error) {
-    res.status(400).send(error)
+    res.status(400)
+    throw new Error(error)
   }
-}
+})
 
 /**
  *  @desc   Update users data (email and password are eligible to change)
