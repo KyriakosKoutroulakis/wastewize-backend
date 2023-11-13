@@ -1,7 +1,7 @@
 const express = require('express')
 const authRoutes = express.Router()
 
-const { verifyRefreshToken } = require('../controllers/tokenController')
+const { verifyRefreshToken } = require('../controllers/refreshTokenController')
 
 /** 
  *  @route  /api/auth

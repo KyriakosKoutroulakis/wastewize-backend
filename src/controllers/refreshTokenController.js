@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const jwt = require('jsonwebtoken')
 
-const RefreshToken = require('../models/refreshTokensModel')
+const RefreshToken = require('../models/refreshTokenModel')
 const User = require('../models/userModel')
 
 /**

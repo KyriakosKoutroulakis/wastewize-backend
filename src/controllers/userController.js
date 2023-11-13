@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 
-const { createRefreshToken, removeRefreshToken } = require('../controllers/tokenController')
+const { createRefreshToken, removeRefreshToken } = require('./refreshTokenController')
 
 const User = require('../models/userModel')
 
