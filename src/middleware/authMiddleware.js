@@ -29,6 +29,9 @@ const authenticateUser = asyncHandler (async (req, res, next) => {
       res.status(401)
       throw new Error(error)
     }
+  } else {
+    res.status(403)
+    throw new Error('Not authorized! Please login.')
   }
 })
 
