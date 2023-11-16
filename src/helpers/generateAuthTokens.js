@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 module.exports = {
   /**
    *  @param   {string}  userId  
-   *  @returns {string}  The newAccessToken generated
+   *  @returns {string}  The new access token generated
    *  @public
   */
   generateAccessToken (userId) {
@@ -12,7 +12,7 @@ module.exports = {
 
   /**
    *  @param   {string}  userId 
-   *  @returns {string}  The refresh token generated
+   *  @returns {string}  The new refresh token generated
    *  @public
   */
   generateRefreshToken (userId) {
