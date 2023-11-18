@@ -108,7 +108,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
     removeRefreshToken(req.user._id)
 
-    res.status(201).send({
+    res.status(200).send({
       successMessage: 'User logged out!'
     })
   } catch (error) {
@@ -129,7 +129,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 
     removeRefreshToken(req.user._id)
 
-    res.status(201).send({
+    res.status(200).send({
       successMessage: 'Account deleted!'
     })
   } catch (error) {
