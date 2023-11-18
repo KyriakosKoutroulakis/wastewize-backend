@@ -7,5 +7,6 @@ const apiRoutes = express.Router()
 */
 apiRoutes.use('/user', require('./userRoutes'))
 apiRoutes.use('/auth', require('./authRoutes'))
+apiRoutes.use('/stores', require('./storeRoutes'))
 
 module.exports = apiRoutes

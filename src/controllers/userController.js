@@ -7,7 +7,7 @@ const User = require('../models/userModel')
 
 /**
  *  @desc   Register a new user in database
- *  @route  POST  api/users/create-account
+ *  @route  POST  api/user/create-account
  *  @public
 */ 
 const registerUser = asyncHandler (async (req, res) => {
@@ -32,7 +32,7 @@ const registerUser = asyncHandler (async (req, res) => {
 
 /**
  *  @desc   Login user and generate new auth token
- *  @route  POST  api/users/login
+ *  @route  POST  api/user/login
  *  @public
 */ 
 const loginUser = asyncHandler (async (req, res) => {
@@ -58,7 +58,7 @@ const loginUser = asyncHandler (async (req, res) => {
 
 /**
  *  @desc   Update users data (email and password are eligible to change)
- *  @route  POST  api/users/update-account
+ *  @route  POST  api/user/update-account
  *  @public
  *  @protected
 */ 
@@ -96,7 +96,7 @@ const updateUsersData = asyncHandler (async (req, res) => {
 
 /**
  *  @desc   Logout user
- *  @route  POST  api/users/logout
+ *  @route  POST  api/user/logout
  *  @public
  *  @protected
 */ 
@@ -119,7 +119,7 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 /**
  *  @desc   Delete users account from db
- *  @route  DELETE  api/users/delete-account
+ *  @route  DELETE  api/user/delete-account
  *  @public
  *  @protected
 */ 
