@@ -7,19 +7,19 @@ const Store = require('../models/storeModel')
  *  @route  GET  api/stores
  *  @public
  *  @protected
-*/ 
-const fetchAllStores= asyncHandler(async (req, res) => {
+ */
+const fetchAllStores = asyncHandler(async (req, res) => {
   try {
-    const stores = await Store.find();
+    const stores = await Store.find()
 
     res.status(200).send({
       successMessage: 'All stores!',
-      stores
+      stores,
     })
   } catch (error) {
     res.status(400)
     throw new Error(error)
-  }  
+  }
 })
 
 module.exports = { fetchAllStores }
