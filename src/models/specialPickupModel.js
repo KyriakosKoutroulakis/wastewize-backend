@@ -1,13 +1,10 @@
 const mongoose = require('mongoose')
 
-const specialPickup = new mongoose.Schema(
+const specialPickupSchema = new mongoose.Schema(
   {
     storeName: {
       type: String,
-      required: [
-        true,
-        'Please provide a store name for the special pickup service.'
-      ]
+      required: [true, 'Please provide a store name for the special pickup service.']
     },
     storeID: {
       type: mongoose.Schema.Types.ObjectId,
@@ -24,6 +21,10 @@ const specialPickup = new mongoose.Schema(
     contactPhone: {
       type: String,
       required: [true, 'Please provide a valid phone number!']
+    },
+    pickupDevice: {
+      type: String,
+      required: [true, 'Please provide a device to be picked!']
     }
   },
   {
@@ -31,5 +32,19 @@ const specialPickup = new mongoose.Schema(
   }
 )
 
-const SpecialPickup = mongoose.model('SpecialPickup', specialPickup)
+// Relationship between  SpecialPickup - Stores
+specialPickupSchema.virtual('stores', {
+  ref: 'Store',
+  localField: '_id',
+  foreignField: 'storeID'
+})
+
+// Relationship between SpecialPickup - User
+specialPickupSchema.virtual('user', {
+  ref: 'User',
+  localField: '_id',
+  foreignField: 'userID'
+})
+
+const SpecialPickup = mongoose.model('SpecialPickup', specialPickupSchema)
 module.exports = SpecialPickup
