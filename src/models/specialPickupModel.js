@@ -46,5 +46,16 @@ specialPickupSchema.virtual('user', {
   foreignField: 'userID'
 })
 
+/**
+ *  @desc   Retrieve all special pickup bookings for a specific user
+ *  @param  {string} id   - users id from the db
+ *  @public
+ */
+specialPickupSchema.statics.findAllSpecialPickupBookings = async (id) => {
+  const specialPickups = await SpecialPickup.find({ userID: id })
+
+  return specialPickups.length ? specialPickups : []
+}
+
 const SpecialPickup = mongoose.model('SpecialPickup', specialPickupSchema)
 module.exports = SpecialPickup
