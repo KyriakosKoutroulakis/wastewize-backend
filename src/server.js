@@ -1,7 +1,7 @@
 const express = require('express')
 const dotenv = require('dotenv').config()
 
-const { connectDatabse } = require('./configs/database')
+const { connectDatabse } = require('./configs/mongodbConf')
 const { logsHandler } = require('./middleware/loggerMiddleware')
 const { errorHandler } = require('./middleware/errorMiddleware')
 

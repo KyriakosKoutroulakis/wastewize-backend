@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 
 const { createRefreshToken, removeRefreshToken } = require('./refreshTokenController')
+const { makeAppropriateGreetToUser } = require('./emailsController')
 
 const User = require('../models/userModel')
 
@@ -9,8 +10,8 @@ const User = require('../models/userModel')
  *  @desc   Register a new user in database
  *  @route  POST  api/user/create-account
  *  @public
-*/ 
-const registerUser = asyncHandler (async (req, res) => {
+ */
+const registerUser = asyncHandler(async (req, res) => {
   const user = new User(req.body)
 
   try {
@@ -18,7 +19,9 @@ const registerUser = asyncHandler (async (req, res) => {
     await user.save()
 
     const refreshToken = await createRefreshToken(user._id)
-  
+
+    makeAppropriateGreetToUser(user.firstName, user.lastName, user.email, 'welcome')
+
     res.status(201).send({
       successMessage: 'Account created successfully!',
       user,
@@ -34,15 +37,15 @@ const registerUser = asyncHandler (async (req, res) => {
  *  @desc   Login user and generate new auth token
  *  @route  POST  api/user/login
  *  @public
-*/ 
-const loginUser = asyncHandler (async (req, res) => {
+ */
+const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
 
   try {
     const user = await User.findUserByCredentials(email, password)
     await user.createAccessToken()
     await user.save()
-    
+
     const refreshToken = await createRefreshToken(user._id)
 
     res.status(200).send({
@@ -61,8 +64,8 @@ const loginUser = asyncHandler (async (req, res) => {
  *  @route  POST  api/user/update-account
  *  @public
  *  @protected
-*/ 
-const updateUsersData = asyncHandler (async (req, res) => {
+ */
+const updateUsersData = asyncHandler(async (req, res) => {
   const { email, password, newEmail, newPassword } = req.body
 
   try {
@@ -81,9 +84,9 @@ const updateUsersData = asyncHandler (async (req, res) => {
       }
       user.password = newPassword
     }
-    
+
     await user.save()
-    
+
     res.status(200).send({
       successMessage: 'You have successfully updated your personal info!',
       user
@@ -99,7 +102,7 @@ const updateUsersData = asyncHandler (async (req, res) => {
  *  @route  POST  api/user/logout
  *  @public
  *  @protected
-*/ 
+ */
 const logoutUser = asyncHandler(async (req, res) => {
   try {
     req.user.accessToken = ''
@@ -122,9 +125,11 @@ const logoutUser = asyncHandler(async (req, res) => {
  *  @route  DELETE  api/user/delete-account
  *  @public
  *  @protected
-*/ 
+ */
 const deleteUserAccount = asyncHandler(async (req, res) => {
   try {
+    makeAppropriateGreetToUser(req.user.firstName, req.user.lastName, req.user.email, 'delete')
+
     await req.user.deleteOne()
 
     removeRefreshToken(req.user._id)
