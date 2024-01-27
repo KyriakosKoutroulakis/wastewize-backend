@@ -10,26 +10,28 @@ const Store = require('../models/storeModel')
  *  @protected
  */
 const specialPickupBooking = asyncHandler(async (req, res) => {
-  const { storeID, contactPhone, pickupDevice } = req.body
+  const { storeID, pickupDevice, selectedDate } = req.body
 
   try {
-    const { storeName, homePickupService } = await Store.findStoreById(storeID)
+    const { storeName, homePickupService, email, telephoneNumber } = await Store.findStoreById(storeID)
 
     if (!homePickupService) {
       throw new Error('Current store does not provide pickup services!')
     }
 
-    if (!contactPhone || !pickupDevice) {
+    if (!pickupDevice) {
       throw new Error('Please provide all the information required to make a special pickup booking!')
     }
 
     const newSpecialPickupBooking = new SpecialPickup({
-      storeName,
       storeID,
-      userFullName: `${req.user.firstName} ${req.user.lastName}`,
+      storeName,
+      storeContactPhone: telephoneNumber,
+      storeEmail: email,
+      selectedDate,
       userID: req.user._id,
-      contactPhone,
-      pickupDevice
+      pickupDevice,
+      status: 'pending'
     })
 
     await newSpecialPickupBooking.save()

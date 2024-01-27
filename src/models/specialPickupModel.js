@@ -2,29 +2,35 @@ const mongoose = require('mongoose')
 
 const specialPickupSchema = new mongoose.Schema(
   {
-    storeName: {
-      type: String,
-      required: [true, 'Please provide a store name for the special pickup service.']
-    },
     storeID: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, 'Please provide store id!']
     },
-    userFullName: {
+    storeName: {
       type: String,
-      required: [true, 'Please provide users full name!']
+      required: [true, 'Please provide a store name for the special pickup service.']
+    },
+    storeContactPhone: {
+      type: String,
+      required: [true, 'Please provide a valid phone number!']
+    },
+    storeEmail: {
+      type: String
+    },
+    selectedDate: {
+      type: String,
+      required: [true, 'Please provide a device to be picked!']
+    },
+    pickupDevice: {
+      type: String,
+      required: [true, 'Please provide a device to be picked!']
     },
     userID: {
       type: mongoose.Schema.Types.ObjectId,
       required: [true, 'Please provide store id!']
     },
-    contactPhone: {
-      type: String,
-      required: [true, 'Please provide a valid phone number!']
-    },
-    pickupDevice: {
-      type: String,
-      required: [true, 'Please provide a device to be picked!']
+    status: {
+      type: String
     }
   },
   {
