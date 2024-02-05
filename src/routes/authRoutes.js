@@ -6,6 +6,6 @@ const { verifyRefreshToken } = require('../controllers/refreshTokenController')
 /** 
  *  @route  /api/auth
 */
-authRoutes.post('/verify-token', verifyRefreshToken)
+authRoutes.post('/refreshtoken', verifyRefreshToken)
 
 module.exports = authRoutes

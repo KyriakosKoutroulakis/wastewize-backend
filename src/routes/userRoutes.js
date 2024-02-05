@@ -12,7 +12,7 @@ const {
 } = require('../controllers/userController')
 
 /** 
- *  @route  /api/users
+ *  @route  /api/user
 */ 
 userRoutes.post('/create-account', registerUser)
 userRoutes.post('/login', loginUser)

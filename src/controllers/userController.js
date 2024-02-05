@@ -43,6 +43,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
   try {
     const user = await User.findUserByCredentials(email, password)
+
+    if (user.accessToken.length > 0) {
+      res.status(200)
+      throw new Error('User already logged in!')
+    }
+  
     await user.createAccessToken()
     await user.save()
 
