@@ -29,7 +29,7 @@ const verifyRefreshToken = asyncHandler (async (req, res) => {
       }
     })
 
-    const token = await RefreshToken.retrieveRefreshToken(requestToken)
+    const token = await RefreshToken.retrieveRefreshToken(requestToken, 'token')
     await token.createRefreshToken(token.owner)
     await token.save()
 

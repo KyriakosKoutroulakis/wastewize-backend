@@ -44,8 +44,10 @@ refreshTokenSchema.methods.createRefreshToken = async function (owner) {
  *  @param  {string} token - The refresh token from the request
  *  @public 
 */
-refreshTokenSchema.statics.retrieveRefreshToken = async function (token) {
-  const refreshToken = await RefreshToken.findOne({ rToken: token })
+refreshTokenSchema.statics.retrieveRefreshToken = async function (id, searchTerm) {
+  let refreshToken = searchTerm === 'token'
+    ? await RefreshToken.findOne({ rToken: id })
+    : await RefreshToken.findOne({ owner: id })
 
   if (!refreshToken) {
     res.status(403)

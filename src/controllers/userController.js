@@ -5,6 +5,7 @@ const { createRefreshToken, removeRefreshToken } = require('./refreshTokenContro
 const { makeAppropriateGreetToUser } = require('./emailsController')
 
 const User = require('../models/userModel')
+const RefreshToken = require('../models/refreshTokenModel')
 
 /**
  *  @desc   Register a new user in database
@@ -44,21 +45,27 @@ const loginUser = asyncHandler(async (req, res) => {
   try {
     const user = await User.findUserByCredentials(email, password)
 
+    // Handle if user is already logged in
     if (user.accessToken.length > 0) {
-      res.status(200)
-      throw new Error('User already logged in!')
+      const { rToken } = await RefreshToken.retrieveRefreshToken(user._id, 'user')
+
+      res.status(200).send({
+        successMessage: 'user_already_logged_in',
+        user,
+        refreshToken: rToken
+      })
+    } else {
+      await user.createAccessToken()
+      await user.save()
+
+      const refreshToken = await createRefreshToken(user._id)
+
+      res.status(200).send({
+        successMessage: 'Login successfull!',
+        user,
+        refreshToken
+      })
     }
-  
-    await user.createAccessToken()
-    await user.save()
-
-    const refreshToken = await createRefreshToken(user._id)
-
-    res.status(200).send({
-      successMessage: 'Login successfull!',
-      user,
-      refreshToken
-    })
   } catch (error) {
     res.status(400)
     throw new Error(error)
