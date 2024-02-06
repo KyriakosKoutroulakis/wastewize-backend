@@ -101,8 +101,11 @@ userSchema.statics.findUserByCredentials = async (email, password) => {
     throw new Error('Email does not exist.')
   }
 
-  if (!await bcrypt.compare(password, user.password)) {
-    throw new Error('Wrong password provided.')
+  if (password.length > 0) {
+    console.log("🚀 ~ userSchema.statics.findUserByCredentials= ~ password.length:", password.length)
+    if (!await bcrypt.compare(password, user.password)) {
+      throw new Error('Wrong password provided.')
+    }
   }
 
   return user

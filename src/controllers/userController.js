@@ -79,10 +79,10 @@ const loginUser = asyncHandler(async (req, res) => {
  *  @protected
  */
 const updateUsersData = asyncHandler(async (req, res) => {
-  const { email, password, newEmail, newPassword } = req.body
+  const { firstName, lastName, newEmail, newPassword, oldPassword } = req.body
 
   try {
-    const user = await User.findUserByCredentials(email, password)
+    const user = await User.findUserByCredentials(req.user.email, oldPassword || '')
 
     if (newEmail) {
       if (user.email === newEmail) {
@@ -97,6 +97,9 @@ const updateUsersData = asyncHandler(async (req, res) => {
       }
       user.password = newPassword
     }
+
+    user.firstName = firstName.length > 0 ? firstName : user.firstName
+    user.lastName = lastName.length > 0 ? lastName : user.lastName
 
     await user.save()
 
