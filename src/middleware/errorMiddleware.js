@@ -1,11 +1,11 @@
 /**
  * @desc    Custom error handler function
  * @public
-*/
+ */
 module.exports = {
-  errorHandler (err, req, res, next) {
+  errorHandler(err, req, res, next) {
     const statusCode = res.statusCode ? res.statusCode : 500
-  
+
     res.status(statusCode)
     res.json({
       message: err.message,

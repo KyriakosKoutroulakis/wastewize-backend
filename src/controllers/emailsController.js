@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 
 const { emailTransporter } = require('../configs/emailProviderConf')
-const { generateWelcomeEmail, generateFarewellEmail } = require('../helpers/emailGen')
+const { generateWelcomeEmail, generateFarewellEmail } = require('../helpers/emailGenerator')
 
 const createEmailToBeSent = (userEmail, emailBody) => {
   let emailToBeSent = {

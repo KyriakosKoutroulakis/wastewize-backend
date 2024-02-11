@@ -5,9 +5,9 @@ const User = require('../models/userModel')
 
 /**
  * @desc    Authenticates user based on the Bearer token provided in the request headers
- * @public 
-*/ 
-const authenticateUser = asyncHandler (async (req, res, next) => {
+ * @public
+ */
+const authenticateUser = asyncHandler(async (req, res, next) => {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       let token = req.headers.authorization.split(' ')[1]

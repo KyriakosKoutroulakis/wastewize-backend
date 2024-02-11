@@ -3,10 +3,7 @@ const specialPickupsRoutes = express.Router()
 
 const { authenticateUser } = require('../middleware/authMiddleware')
 
-const {
-  specialPickupBooking,
-  fetchUsersPickupRequests
-} = require('../controllers/specialPickupsController')
+const { specialPickupBooking, fetchUsersPickupRequests } = require('../controllers/specialPickupsController')
 
 /**
  *  @route  /api/special-pickups
