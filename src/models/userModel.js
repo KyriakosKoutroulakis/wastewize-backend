@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const emailValidator = require("email-validator")
+const emailValidator = require('email-validator')
 const bcrypt = require('bcrypt')
 
 const { generateAccessToken } = require('../helpers/generateAuthTokens')
@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       required: [true, 'Please provide your email'],
       trim: true,
-      validate (email) {
+      validate(email) {
         if (!emailValidator.validate(email)) {
           throw new Error('Please provide a valid email address!')
         }
@@ -31,25 +31,29 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please provide a strong password'],
       trim: true,
-      validate (password) {
+      validate(password) {
         if (password.length < 7) {
           throw new Error('Password must contain at least 6 alphanumeric values!')
         }
       }
+    },
+    recieveEmails: {
+      type: Boolean,
+      default: true
     },
     accessToken: {
       type: String
     }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 
 /**
  *  @desc   Hash users password before storing it to database
- *  @private  
-*/
+ *  @private
+ */
 userSchema.pre('save', async function (next) {
   const user = this
 
@@ -62,8 +66,8 @@ userSchema.pre('save', async function (next) {
 
 /**
  *  @desc   Remove confidential info before returning the user object
- *  @private  
-*/
+ *  @private
+ */
 userSchema.methods.toJSON = function () {
   const user = this
   const userObj = user.toObject()
@@ -78,8 +82,8 @@ userSchema.methods.toJSON = function () {
 
 /**
  *  @desc   Generate users access token for authentication
- *  @public 
-*/
+ *  @public
+ */
 userSchema.methods.createAccessToken = async function () {
   const user = this
 
@@ -93,7 +97,7 @@ userSchema.methods.createAccessToken = async function () {
  *  @param  {string} email      - the email address that is being used
  *  @param  {string} password   - users password
  *  @public
-*/
+ */
 userSchema.statics.findUserByCredentials = async (email, password) => {
   const user = await User.findOne({ email })
 
@@ -102,7 +106,7 @@ userSchema.statics.findUserByCredentials = async (email, password) => {
   }
 
   if (password.length > 0) {
-    if (!await bcrypt.compare(password, user.password)) {
+    if (!(await bcrypt.compare(password, user.password))) {
       throw new Error('Wrong password provided.')
     }
   }
@@ -114,7 +118,7 @@ userSchema.statics.findUserByCredentials = async (email, password) => {
  *  @desc   Retrieve user based on the unique _id
  *  @param  {string} id   - users id from the db
  *  @public
-*/
+ */
 userSchema.statics.findUserById = async (id) => {
   const user = await User.findById(id)
 

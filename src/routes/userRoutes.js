@@ -3,7 +3,14 @@ const userRoutes = express.Router()
 
 const { authenticateUser } = require('../middleware/authMiddleware')
 
-const { registerUser, loginUser, logoutUser, updateUsersData, deleteUserAccount } = require('../controllers/userController')
+const {
+  registerUser,
+  loginUser,
+  logoutUser,
+  updateUsersProfile,
+  updateUsersEmailSettings,
+  deleteUserAccount
+} = require('../controllers/userController')
 
 /**
  *  @route  /api/user
@@ -11,7 +18,8 @@ const { registerUser, loginUser, logoutUser, updateUsersData, deleteUserAccount 
 userRoutes.post('/create-account', registerUser)
 userRoutes.post('/login', loginUser)
 userRoutes.post('/logout', authenticateUser, logoutUser)
-userRoutes.put('/update-account', authenticateUser, updateUsersData)
+userRoutes.put('/update-account', authenticateUser, updateUsersProfile)
+userRoutes.put('/email-settings', authenticateUser, updateUsersEmailSettings)
 userRoutes.delete('/delete-account', authenticateUser, deleteUserAccount)
 
 module.exports = userRoutes

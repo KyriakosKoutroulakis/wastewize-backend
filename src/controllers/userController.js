@@ -73,12 +73,12 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 /**
- *  @desc   Update users data (email and password are eligible to change)
+ *  @desc   Update users data
  *  @route  POST  api/user/update-account
  *  @public
  *  @protected
  */
-const updateUsersData = asyncHandler(async (req, res) => {
+const updateUsersProfile = asyncHandler(async (req, res) => {
   const { firstName, lastName, newEmail, newPassword, oldPassword } = req.body
 
   try {
@@ -106,6 +106,30 @@ const updateUsersData = asyncHandler(async (req, res) => {
     res.status(200).send({
       successMessage: 'You have successfully updated your personal info!',
       user
+    })
+  } catch (error) {
+    res.status(400)
+    throw new Error(error)
+  }
+})
+
+/**
+ *  @desc   Update users recieveEmail status
+ *  @route  POST  api/user/email-settings
+ *  @public
+ *  @protected
+ */
+const updateUsersEmailSettings = asyncHandler(async (req, res) => {
+  const { recieveEmail } = req.body
+
+  try {
+    req.user.recieveEmails = recieveEmail
+
+    await req.user.save()
+
+    res.status(200).send({
+      successMessage: 'You have successfully updated your email settings!',
+      user: req.user
     })
   } catch (error) {
     res.status(400)
@@ -159,4 +183,4 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
   }
 })
 
-module.exports = { registerUser, loginUser, updateUsersData, deleteUserAccount, logoutUser }
+module.exports = { registerUser, loginUser, updateUsersProfile, updateUsersEmailSettings, deleteUserAccount, logoutUser }

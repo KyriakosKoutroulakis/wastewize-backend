@@ -1,5 +1,7 @@
 const asyncHandler = require('express-async-handler')
 
+const { updateUserAboutSpecialPickup } = require('./emailsController')
+
 const SpecialPickup = require('../models/specialPickupModel')
 const Store = require('../models/storeModel')
 
@@ -35,6 +37,8 @@ const specialPickupBooking = asyncHandler(async (req, res) => {
     })
 
     await newSpecialPickupBooking.save()
+
+    updateUserAboutSpecialPickup(req.user.firstName, req.user.email, storeName, telephoneNumber, selectedDate, pickupDevice)
 
     res.status(201).send({
       successMessage: 'Special pickup booking made successfully!',

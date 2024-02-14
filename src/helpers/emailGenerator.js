@@ -45,4 +45,41 @@ const generateFarewellEmail = (name) => {
   return emailBody
 }
 
-module.exports = { generateWelcomeEmail, generateFarewellEmail }
+const generateSpecialPickupEmail = (name, storeName, storeContactPhone, selectedDate, pickupDevice) => {
+  let email = {
+    body: {
+      title: `Hello, ${name}`,
+      intro: "We're happy to inform you that you have successfully scheduled a special pickup for you!",
+      table: [
+        {
+          title: 'Special pickup details:',
+          data: [
+            {
+              key: 'Store name',
+              value: storeName
+            },
+            {
+              key: 'Store contact phone',
+              value: storeContactPhone
+            },
+            {
+              key: 'Selected date',
+              value: selectedDate
+            },
+            {
+              key: 'Pickup device',
+              value: pickupDevice
+            }
+          ]
+        }
+      ],
+      outro: 'Need help, or have questions? Just reply to this email, we would love to help.'
+    }
+  }
+
+  let emailBody = mailGenerator.generate(email)
+
+  return emailBody
+}
+
+module.exports = { generateWelcomeEmail, generateFarewellEmail, generateSpecialPickupEmail }

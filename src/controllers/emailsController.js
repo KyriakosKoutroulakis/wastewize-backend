@@ -1,7 +1,7 @@
 const asyncHandler = require('express-async-handler')
 
 const { emailTransporter } = require('../configs/emailProviderConf')
-const { generateWelcomeEmail, generateFarewellEmail } = require('../helpers/emailGenerator')
+const { generateWelcomeEmail, generateFarewellEmail, generateSpecialPickupEmail } = require('../helpers/emailGenerator')
 
 const createEmailToBeSent = (userEmail, emailBody) => {
   let emailToBeSent = {
@@ -39,6 +39,26 @@ const makeAppropriateGreetToUser = asyncHandler(async (firstName, lastName, emai
   }
 })
 
-const updateUserAboutAction = asyncHandler(async () => {})
+/**
+ *  @desc   Summarize the special pickup details and send an email to the user
+ *  @param  {string} name
+ *  @param  {string} email
+ *  @param  {string} storeName
+ *  @param  {string} storeContactPhone
+ *  @param  {string} selectedDate
+ *  @param  {string} pickupDevice
+ *  @public
+ */
+const updateUserAboutSpecialPickup = asyncHandler(async (name, email, storeName, storeContactPhone, selectedDate, pickupDevice) => {
+  let emailBody = generateSpecialPickupEmail(name, storeName, storeContactPhone, selectedDate, pickupDevice)
 
-module.exports = { makeAppropriateGreetToUser, updateUserAboutAction }
+  const emailReady = createEmailToBeSent(email, emailBody)
+
+  try {
+    await emailTransporter.sendMail(emailReady)
+  } catch (error) {
+    // TODO log the error for reference
+  }
+})
+
+module.exports = { makeAppropriateGreetToUser, updateUserAboutSpecialPickup }
