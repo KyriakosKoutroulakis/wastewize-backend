@@ -63,5 +63,21 @@ specialPickupSchema.statics.findAllSpecialPickupBookings = async (id) => {
   return specialPickups.length ? specialPickups : []
 }
 
+/**
+ *  @desc   Retrieve a special pickup booking from the database
+ *  @param  {string} id   - users id from the db
+ *  @public
+ */
+specialPickupSchema.statics.findSpecialPickup = async (id) => {
+  const specialPickup = await SpecialPickup.findOne({ _id: id })
+
+  if (!specialPickup) {
+    res.status(403)
+    throw new Error('Special pickup does not exist in database!')
+  }
+
+  return specialPickup
+}
+
 const SpecialPickup = mongoose.model('SpecialPickup', specialPickupSchema)
 module.exports = SpecialPickup
